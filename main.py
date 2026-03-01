@@ -10,7 +10,7 @@ from fastapi import Request
 import uuid
 import asyncio
 import json
-
+import os
 app = FastAPI()
 origins = [
     "http://localhost:5173",  # Vite default
@@ -27,7 +27,7 @@ app.add_middleware(
 class TopicRequest(BaseModel):
     topic: str
     
-
+os.makedirs("audio", exist_ok=True)
 app.mount("/audio", StaticFiles(directory="audio"), name="audio")
 
 # In-memory job store
