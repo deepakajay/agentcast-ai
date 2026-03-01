@@ -1,9 +1,12 @@
+from fileinput import filename
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from agents import create_crew
 from tts_service import generate_audio_sync
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi import Request
 import uuid
 import asyncio
 import json
@@ -31,14 +34,15 @@ app.mount("/audio", StaticFiles(directory="audio"), name="audio")
 jobs = {}
 
 # Async job processor
-async def process_job(job_id: str, topic: str):
+async def process_job(job_id: str, topic: str, req: Request):
     jobs[job_id]["status"] = "processing"
     try:
         result = await asyncio.to_thread(create_crew, topic)
         parsed = json.loads(result.raw)
         audio_path = await asyncio.to_thread(generate_audio_sync, parsed["dialogue"])
         filename = audio_path.split("\\")[-1]
-        audio_url = f"http://localhost:8000/audio/{filename}"
+        base_url = str(req.base_url).rstrip("/")
+        audio_url = f"{base_url}/audio/{filename}"
         jobs[job_id]["status"] = "completed"
         jobs[job_id]["result"] = {
             "dialogue": parsed["dialogue"],
@@ -50,13 +54,13 @@ async def process_job(job_id: str, topic: str):
 
 # POST /generate: Start job, return job_id
 @app.post("/generate")
-async def generate_podcast(request: TopicRequest):
+async def generate_podcast(request: TopicRequest, req: Request):
     job_id = uuid.uuid4().hex
     jobs[job_id] = {
         "status": "queued",
         "topic": request.topic
     }
-    asyncio.create_task(process_job(job_id, request.topic))
+    asyncio.create_task(process_job(job_id, request.topic, req))
     return {"job_id": job_id}
 
 # GET /status/{job_id}: Return job status
