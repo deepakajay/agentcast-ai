@@ -1,12 +1,14 @@
 # 🎙️ AgentCast Backend
 ### *Turn Any Topic Into an AI Debate Podcast*
-![Uploading mermaid-diagram.png…]()
+
 
 > AgentCast is an AI-powered backend that transforms any topic into a fully generated, two-speaker debate podcast — complete with Indian voice narration and intro music.
 
 It combines **multi-agent AI orchestration**, **LLM intelligence**, and **text-to-speech audio generation** into one seamless pipeline.
 
 ---
+<img width="3410" height="593" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/76cfe851-7cef-4b6f-91ef-78a9d550f273" />
+
 
 ## 🌍 What It Does
 
