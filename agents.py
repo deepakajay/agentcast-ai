@@ -159,8 +159,8 @@ def create_crew(topic: str):
         agent=formatter_agent,
         context=[script_task]
     )
-
-    # ─────────────────────────────────────────
+    
+    # ─────────────────────────────────────────tt
     # CREW
     # ─────────────────────────────────────────
     crew = Crew(
